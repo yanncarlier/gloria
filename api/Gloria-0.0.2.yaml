@@ -1,74 +1,88 @@
 openapi: 3.0.0
 info:
   description: |
-    This is a sample avatarstore server.  You can find
-    out more about Swagger at
-    [http://swagger.io](http://swagger.io) or on
-    [irc.freenode.net, #swagger](http://swagger.io/irc/).
-  version: "1.0.0"
-  title: Swagger avatarstore
-  termsOfService: 'http://swagger.io/terms/'
+    This is a sample avatars store server.  You can find
+    out more about set-out at
+    [http://gloria.set-out.com](http://gloria.set-out.com) 
+
+    https://www.youtube.com/watch?v=VsSBnLGM340
+
+    1. Use JSON
+    2. Use Nouns instead of Verbs
+    3. Name the collections using Plural Nouns
+    4. Use resource nesting
+    5. Error Handling
+    6. Filtering, sorting, paging, and field selection
+    7. Versioning
+    8. API Documentation
+    9. Using SSL/TLS
+
+    Coletion is a list of somthing...
+
+  version: "0.0.2"
+  title: set-out avatars store
+  termsOfService: 'http://gloria.set-out.com/terms/'
   contact:
-    email: apiteam@swagger.io
+    email: contact@set-out.com
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 servers:
   # Added by API Auto Mocking Plugin
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/contactmymop/Gloria/1.0.0
-  - url: 'https://avatarstore.swagger.io/v2'
+  - description: set-out Hub API Auto Mocking
+    url: https://virtserver.set-out.com/contactmymop/Gloria/1.0.0
+  - url: 'https://avatarsstore.gloria.set-out.com/v2'
 tags:
-  - name: avatar
+  - name: avatars
     description: Everything about your avatars
     externalDocs:
       description: Find out more
-      url: 'http://swagger.io'
+      url: 'http://gloria.set-out.com'
   - name: store
-    description: Access to avatarstore orders
+    description: Access to avatars store orders
   - name: user
     description: Operations about user
     externalDocs:
       description: Find out more about our store
-      url: 'http://swagger.io'
+      url: 'http://gloria.set-out.com'
 paths:
-  /avatar:
+  /avatars:
     post:
       tags:
-        - avatar
-      summary: Add a new avatar to the store
-      operationId: addavatar
+        - avatars
+      summary: Add a new avatars to the store
+      operationId: addavatars
       responses:
         '405':
           description: Invalid input
       security:
-        - avatarstore_auth:
+        - avatarsstore_auth:
             - 'write:avatars'
             - 'read:avatars'
       requestBody:
-        $ref: '#/components/requestBodies/avatar'
+        $ref: '#/components/requestBodies/avatars'
     put:
       tags:
-        - avatar
-      summary: Update an existing avatar
-      operationId: updateavatar
+        - avatars
+      summary: Update an existing avatars
+      operationId: updateavatars
       responses:
         '400':
           description: Invalid ID supplied
         '404':
-          description: avatar not found
+          description: avatars not found
         '405':
           description: Validation exception
       security:
-        - avatarstore_auth:
+        - avatarsstore_auth:
             - 'write:avatars'
             - 'read:avatars'
       requestBody:
-        $ref: '#/components/requestBodies/avatar'
-  /avatar/findByStatus:
+        $ref: '#/components/requestBodies/avatars'
+  /avatars/findByStatus:
     get:
       tags:
-        - avatar
+        - avatars
       summary: Finds avatars by status
       description: Multiple status values can be provided with comma separated strings
       operationId: findavatarsByStatus
@@ -95,22 +109,22 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/avatar'
+                  $ref: '#/components/schemas/avatars'
             application/xml:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/avatar'
+                  $ref: '#/components/schemas/avatars'
         '400':
           description: Invalid status value
       security:
-        - avatarstore_auth:
+        - avatarsstore_auth:
             - 'write:avatars'
             - 'read:avatars'
-  /avatar/findByTags:
+  /avatars/findByTags:
     get:
       tags:
-        - avatar
+        - avatars
       summary: Finds avatars by tags
       description: >-
         Muliple tags can be provided with comma separated strings. Use\ \ tag1,
@@ -134,30 +148,30 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/avatar'
+                  $ref: '#/components/schemas/avatars'
             application/xml:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/avatar'
+                  $ref: '#/components/schemas/avatars'
         '400':
           description: Invalid tag value
       security:
-        - avatarstore_auth:
+        - avatarsstore_auth:
             - 'write:avatars'
             - 'read:avatars'
       deprecated: true
-  '/avatar/{avatarId}':
+  '/avatars/{avatarsId}':
     get:
       tags:
-        - avatar
-      summary: Find avatar by ID
-      description: Returns a single avatar
-      operationId: getavatarById
+        - avatars
+      summary: Find avatars by ID
+      description: Returns a single avatars
+      operationId: getavatarsById
       parameters:
-        - name: avatarId
+        - name: avatarsId
           in: path
-          description: ID of avatar to return
+          description: ID of avatars to return
           required: true
           schema:
             type: integer
@@ -168,25 +182,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/avatar'
+                $ref: '#/components/schemas/avatars'
             application/xml:
               schema:
-                $ref: '#/components/schemas/avatar'
+                $ref: '#/components/schemas/avatars'
         '400':
           description: Invalid ID supplied
         '404':
-          description: avatar not found
+          description: avatars not found
       security:
         - api_key: []
     post:
       tags:
-        - avatar
-      summary: Updates a avatar in the store with form data
-      operationId: updateavatarWithForm
+        - avatars
+      summary: Updates a avatars in the store with form data
+      operationId: updateavatarsWithForm
       parameters:
-        - name: avatarId
+        - name: avatarsId
           in: path
-          description: ID of avatar that needs to be updated
+          description: ID of avatars that needs to be updated
           required: true
           schema:
             type: integer
@@ -195,7 +209,7 @@ paths:
         '405':
           description: Invalid input
       security:
-        - avatarstore_auth:
+        - avatarsstore_auth:
             - 'write:avatars'
             - 'read:avatars'
       requestBody:
@@ -205,25 +219,25 @@ paths:
               type: object
               properties:
                 name:
-                  description: Updated name of the avatar
+                  description: Updated name of the avatars
                   type: string
                 status:
-                  description: Updated status of the avatar
+                  description: Updated status of the avatars
                   type: string
     delete:
       tags:
-        - avatar
-      summary: Deletes a avatar
-      operationId: deleteavatar
+        - avatars
+      summary: Deletes a avatars
+      operationId: deleteavatars
       parameters:
         - name: api_key
           in: header
           required: false
           schema:
             type: string
-        - name: avatarId
+        - name: avatarsId
           in: path
-          description: avatar id to delete
+          description: avatars id to delete
           required: true
           schema:
             type: integer
@@ -232,21 +246,21 @@ paths:
         '400':
           description: Invalid ID supplied
         '404':
-          description: avatar not found
+          description: avatars not found
       security:
-        - avatarstore_auth:
+        - avatarsstore_auth:
             - 'write:avatars'
             - 'read:avatars'
-  '/avatar/{avatarId}/uploadImage':
+  '/avatars/{avatarsId}/uploadImage':
     post:
       tags:
-        - avatar
+        - avatars
       summary: uploads an image
       operationId: uploadFile
       parameters:
-        - name: avatarId
+        - name: avatarsId
           in: path
-          description: ID of avatar to update
+          description: ID of avatars to update
           required: true
           schema:
             type: integer
@@ -259,7 +273,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
       security:
-        - avatarstore_auth:
+        - avatarsstore_auth:
             - 'write:avatars'
             - 'read:avatars'
       requestBody:
@@ -272,7 +286,7 @@ paths:
     get:
       tags:
         - store
-      summary: Returns avatar inventories by status
+      summary: Returns avatars inventories by status
       description: Returns a map of status codes to quantities
       operationId: getInventory
       responses:
@@ -291,7 +305,7 @@ paths:
     post:
       tags:
         - store
-      summary: Place an order for a avatar
+      summary: Place an order for a avatars
       operationId: placeOrder
       responses:
         '200':
@@ -310,7 +324,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Order'
-        description: order placed for purchasing the avatar
+        description: order placed for purchasing the avatars
         required: true
   '/store/order/{orderId}':
     get:
@@ -324,7 +338,7 @@ paths:
       parameters:
         - name: orderId
           in: path
-          description: ID of avatar that needs to be fetched
+          description: ID of avatars that needs to be fetched
           required: true
           schema:
             type: integer
@@ -528,8 +542,8 @@ paths:
         '404':
           description: User not found
 externalDocs:
-  description: Find out more about Swagger
-  url: 'http://swagger.io'
+  description: Find out more about set-out
+  url: 'http://gloria.set-out.com'
 components:
   schemas:
     Order:
@@ -538,7 +552,7 @@ components:
         id:
           type: integer
           format: int64
-        avatarId:
+        avatarsId:
           type: integer
           format: int64
         quantity:
@@ -603,7 +617,7 @@ components:
           type: string
       xml:
         name: Tag
-    avatar:
+    avatars:
       type: object
       required:
         - name
@@ -633,13 +647,13 @@ components:
             $ref: '#/components/schemas/Tag'
         status:
           type: string
-          description: avatar status in the store
+          description: avatars status in the store
           enum:
             - available
             - pending
             - sold
       xml:
-        name: avatar
+        name: avatars
     ApiResponse:
       type: object
       properties:
@@ -651,15 +665,15 @@ components:
         message:
           type: string
   requestBodies:
-    avatar:
+    avatars:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/avatar'
+            $ref: '#/components/schemas/avatars'
         application/xml:
           schema:
-            $ref: '#/components/schemas/avatar'
-      description: avatar object that needs to be added to the store
+            $ref: '#/components/schemas/avatars'
+      description: avatars object that needs to be added to the store
       required: true
     UserArray:
       content:
@@ -671,11 +685,11 @@ components:
       description: List of user object
       required: true
   securitySchemes:
-    avatarstore_auth:
+    avatarsstore_auth:
       type: oauth2
       flows:
         implicit:
-          authorizationUrl: 'http://avatarstore.swagger.io/oauth/dialog'
+          authorizationUrl: 'http://avatarsstore.gloria.set-out.com/oauth/dialog'
           scopes:
             'write:avatars': modify avatars in your account
             'read:avatars': read your avatars
