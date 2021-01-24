@@ -2,24 +2,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 The purpose of this project is to solve the need for trusting as less as possible a 3rd party, for example, an Oracle, when interacting with a blockchain.
 
 Setting a combination of 3 different methods and simultaneous of Authentication, authorization, and accounting (AAA).
