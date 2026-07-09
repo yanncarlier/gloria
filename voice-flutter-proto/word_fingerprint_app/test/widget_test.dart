@@ -1,30 +1,75 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:word_fingerprint_app/main.dart';
+import 'package:word_fingerprint_app/dsp/fingerprint.dart';
+import 'package:word_fingerprint_app/dsp/mfcc.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  test('identical voice sequences are accepted as the same word', () {
+    final sequence = [
+      [0.9, 0.2, -0.3, 0.1],
+      [0.8, 0.1, -0.2, 0.0],
+      [0.7, 0.2, -0.1, 0.1],
+    ];
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    final comparison = compareVoiceSequences(sequence, sequence);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    expect(comparison.isSameWord, isTrue);
+    expect(comparison.verdict, 'SAME WORD');
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  test('slightly perturbed same-word sequences are accepted', () {
+    final first = [
+      [0.9, 0.2, -0.3, 0.1],
+      [0.8, 0.1, -0.2, 0.0],
+      [0.7, 0.2, -0.1, 0.1],
+    ];
+    final second = [
+      [0.88, 0.18, -0.32, 0.12],
+      [0.82, 0.12, -0.19, -0.01],
+      [0.72, 0.21, -0.09, 0.11],
+    ];
+
+    final comparison = compareVoiceSequences(first, second);
+
+    expect(comparison.isSameWord, isTrue);
+    expect(comparison.verdict, 'SAME WORD');
+  });
+
+  test('mfcc normalization removes coefficient drift across frames', () {
+    final extractor = MfccExtractor();
+    final sequence = [
+      [1.0, 2.0],
+      [1.4, 2.6],
+      [0.6, 1.4],
+    ];
+
+    final normalized = extractor.normalizeMfccSequence(sequence);
+
+    for (int coeff = 0; coeff < normalized[0].length; coeff++) {
+      double sum = 0;
+      for (final frame in normalized) {
+        sum += frame[coeff];
+      }
+      final mean = sum / normalized.length;
+      expect(mean.abs(), lessThan(1e-9));
+    }
+  });
+
+  test('distinct voice sequences are marked as different', () {
+    final first = [
+      [0.9, 0.2, -0.3, 0.1],
+      [0.8, 0.1, -0.2, 0.0],
+      [0.7, 0.2, -0.1, 0.1],
+    ];
+    final second = [
+      [-0.8, 0.7, 0.3, -0.6],
+      [-0.9, 0.8, 0.2, -0.7],
+      [-0.7, 0.6, 0.4, -0.5],
+    ];
+
+    final comparison = compareVoiceSequences(first, second);
+
+    expect(comparison.isSameWord, isFalse);
+    expect(comparison.verdict, 'DIFFERENT');
   });
 }

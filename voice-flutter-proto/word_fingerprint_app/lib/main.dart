@@ -72,9 +72,9 @@ class _HomePageState extends State<HomePage> {
   List<ComparisonRow> _results = [];
 
   static const int _sampleRate = 16000;
-  // Tune these two thresholds against your own recordings.
-  static const double _dtwSameWordThreshold = 45.0;
-  static const int _hammingSameWordThreshold = 20;
+  static const double _dtwSameWordThreshold = 1.5;
+  static const int _hammingSameWordThreshold = 10;
+  static const double _featureSameWordThreshold = 0.2;
 
   @override
   void dispose() {
@@ -162,26 +162,20 @@ class _HomePageState extends State<HomePage> {
         for (int j = i + 1; j < _samples.length; j++) {
           final a = _samples[i];
           final b = _samples[j];
-          final dtwD = dtwDistance(a.mfccSeq!, b.mfccSeq!);
-          final hamD = hammingDistance(a.fingerprint!.bits, b.fingerprint!.bits);
-
-          final sameByDtw = dtwD < _dtwSameWordThreshold;
-          final sameByHash = hamD < _hammingSameWordThreshold;
-          String verdict;
-          if (sameByDtw && sameByHash) {
-            verdict = 'SAME WORD';
-          } else if (sameByDtw || sameByHash) {
-            verdict = 'UNCERTAIN';
-          } else {
-            verdict = 'DIFFERENT';
-          }
+          final comparison = compareVoiceSequences(
+            a.mfccSeq!,
+            b.mfccSeq!,
+            dtwSameWordThreshold: _dtwSameWordThreshold,
+            hammingSameWordThreshold: _hammingSameWordThreshold,
+            featureSameWordThreshold: _featureSameWordThreshold,
+          );
 
           rows.add(ComparisonRow(
             nameA: a.name,
             nameB: b.name,
-            dtwDistance: dtwD,
-            hammingDistance: hamD,
-            verdict: verdict,
+            dtwDistance: comparison.dtwDistance,
+            hammingDistance: comparison.hammingDistance,
+            verdict: comparison.verdict,
           ));
         }
       }

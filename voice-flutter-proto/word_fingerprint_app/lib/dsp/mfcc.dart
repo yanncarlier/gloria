@@ -66,7 +66,50 @@ class MfccExtractor {
       mfccSequence.add(coeffs);
     }
 
-    return mfccSequence;
+    return normalizeMfccSequence(mfccSequence);
+  }
+
+  List<List<double>> normalizeMfccSequence(List<List<double>> mfccSequence) {
+    if (mfccSequence.isEmpty) return mfccSequence;
+
+    final nFrames = mfccSequence.length;
+    final nCoeffs = mfccSequence[0].length;
+
+    final means = List<double>.filled(nCoeffs, 0);
+    for (final frame in mfccSequence) {
+      for (int c = 0; c < nCoeffs; c++) {
+        means[c] += frame[c];
+      }
+    }
+    for (int c = 0; c < nCoeffs; c++) {
+      means[c] /= nFrames;
+    }
+
+    final centered = List<List<double>>.generate(
+      nFrames,
+      (frameIndex) => List<double>.generate(nCoeffs, (coeffIndex) {
+        return mfccSequence[frameIndex][coeffIndex] - means[coeffIndex];
+      }),
+    );
+
+    final variances = List<double>.filled(nCoeffs, 0);
+    for (final frame in centered) {
+      for (int c = 0; c < nCoeffs; c++) {
+        final diff = frame[c];
+        variances[c] += diff * diff;
+      }
+    }
+    final stds = List<double>.filled(nCoeffs, 0);
+    for (int c = 0; c < nCoeffs; c++) {
+      stds[c] = math.sqrt(variances[c] / nFrames);
+    }
+
+    return List<List<double>>.generate(nFrames, (frameIndex) {
+      return List<double>.generate(nCoeffs, (coeffIndex) {
+        final std = stds[coeffIndex];
+        return std < 1e-12 ? 0.0 : centered[frameIndex][coeffIndex] / std;
+      });
+    });
   }
 
   List<double> _trimSilence(List<double> samples, {double thresholdRatio = 0.02}) {
