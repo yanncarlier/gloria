@@ -1,6 +1,6 @@
 # Gloria
 
-
+Biometric blockchain authentication prototype
 
 The purpose of this project is to solve the need for trusting as less as possible a 3rd party, for example, an Oracle, when interacting with a blockchain.
 
